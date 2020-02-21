@@ -1,1 +1,1 @@
-# ga-realtime-sampling
+## Simple app for monitoring and sampling of GA real time data

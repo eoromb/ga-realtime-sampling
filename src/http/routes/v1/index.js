@@ -1,13 +1,9 @@
 const express = require('express');
-const orders = require('./metric');
-// const orderDeliveries = require('./orders/order-delivery');
-// const orderPreparations = require('./orders/order-preparation');
+const metric = require('./metric');
 
-module.exports = ({orderController, deliveryController, preparationController}) => {
+module.exports = ({metricController}) => {
     const router = express.Router();
-    router.use('/metric', orders({orderController, deliveryController, preparationController}));
-    // router.use('/orders/:id/delivery', orderDeliveries(deliveryController));
-    // router.use('/orders/:id/preparation', orderPreparations(preparationController));
+    router.use('/metric', metric({metricController}));
 
     return router;
 };

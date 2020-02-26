@@ -2,11 +2,18 @@ class MetricRepository {
     constructor (knexClient) {
         this.knexClient = knexClient;
     }
-    addMetricValue (value, timestamp) {
-
+    async addMetricValue ({metric, value, timestamp}) {
+        return this.knexClient('metric').insert({metric, value, timestamp});
     }
-    getMetric ({metric, from, to}) {
-
+    async getMetric ({metric, from, to}) {
+        return this.knexClient
+            .select()
+            .from('metric')
+            .where('metric', metric)
+            .andWhere(function () {
+                // eslint-disable-next-line no-invalid-this
+                this.where('timestamp', '>', +from).andWhere('timestamp', '<', +to);
+            });
     }
 }
 module.exports = MetricRepository;

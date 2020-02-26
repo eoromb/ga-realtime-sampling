@@ -2,11 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const common = require('./src/common')();
 const persistence = require('./src/persistence')({common});
-const services = require('./src/services')({persistence});
+const services = require('./src/services')({persistence, common});
 const controllers = require('./src/http/controllers')({services});
-const {configService, logService} = common;
 const errorHandler = require('./src/http/middlewares/error-handler');
 const setupRoutes = require('./src/http/routes');
+const {configService, logService} = common;
 
 const app = express();
 app.use(bodyParser.urlencoded({limit: '50mb', extended: false}));
@@ -36,6 +36,7 @@ const server = app.listen(port, function () {
     const host = server.address().address;
     const port = server.address().port;
     logService.info(`${Date(Date.now())}: Node server started on ${host}:${port} ...`);
+    services.samplingService.startSampling();
 });
 
 module.exports = server;

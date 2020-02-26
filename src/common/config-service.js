@@ -8,10 +8,12 @@ class ConfigService {
     getSamplingServiceConfig () {
         return {
             metric: process.env.SAMPLING_METRIC,
-            view: process.env.SAMPLING_VIEW,
-            interval: process.env.SAMPLING_INTERVAL || 5,
-            pollingTimeout: process.env.POLLING_TIMEOUT || 500
+            viewId: process.env.SAMPLING_VIEW_ID,
+            pollingTimeout: +process.env.POLLING_TIMEOUT || 500
         };
+    }
+    getSamplingInterval () {
+        return +process.env.SAMPLING_INTERVAL || 5;
     }
     getDatabaseConfig () {
         return {
@@ -23,7 +25,7 @@ class ConfigService {
         };
     }
     getServerPort () {
-        return process.env.PORT || 3000;
+        return +process.env.PORT || 3000;
     }
 }
 module.exports = ConfigService;

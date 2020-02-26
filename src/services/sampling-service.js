@@ -1,44 +1,47 @@
 class SamplingService {
-    constructor ({metricProvider, configService, logService, metricRepository}) {
+    constructor ({metricProvider, metricRepository, samplingStrategy, timestampStrategy, configService, logService}) {
         this.metricProvider = metricProvider;
+        this.metricRepository = metricRepository;
+        this.samplingStrategy = samplingStrategy;
+        this.timestampStrategy = timestampStrategy;
         this.logService = logService;
         this.config = configService.getSamplingServiceConfig();
-        this.metricRepository = metricRepository;
-        this.metricAvg = 0;
-        this.samplesCount = 1;
+
         this.timestamp = 0;
         this.consecutiveErrorsCount = 0;
-    }
-    async saveMetric (value, timestamp) {
-        await this.metricRepository.addMetricValue(value, timestamp);
     }
     getPollingTimeout () {
         return Math.pow(2, Math.min(this.consecutiveErrorsCount, 4)) * this.config.pollingTimeout;
     }
+    scheduleNextStep (timeout) {
+        if (this.isSamplingStarted) {
+            this.timerId = setTimeout(this.samplingStep.bind(this), timeout, true);
+        }
+    }
     async samplingStep () {
         try {
             const metricValue = await this.metricProvider.getMetric(this.config.viewId, this.config.metric);
-            const nextTimestamp = SamplingService.getNextTimestamp(this.config.interval);
-            if (nextTimestamp !== this.timestamp && this.timestamp !== 0) {
-                try {
-                    await this.saveMetric(this.metricAvg, this.timestamp);
-                } catch (error) {
-                    this.logService.warn(`Error on adding metric value. Error: ${error}`);
+            const nextTimestamp = this.timestampStrategy.getNextTimestamp();
+            if (nextTimestamp !== this.timestamp) {
+                if (this.timestamp !== 0) {
+                    try {
+                        const samplingResult = this.samplingStrategy.endSampling();
+                        await this.metricRepository.addMetricValue({metric: this.config.metric, value: samplingResult, timestamp: this.timestamp});
+                    } catch (error) {
+                        this.logService.error(`Error on adding metric value. Error: ${error}`);
+                    }
                 }
                 this.timestamp = nextTimestamp;
-                this.metricAvg = 0;
-                this.samplesCount = 1;
-            } else if (this.timestamp === 0) {
-                this.timestamp = nextTimestamp;
+                this.samplingStrategy.beginSampling();
             }
-            this.metricAvg += (metricValue - this.metricAvg) / this.samplesCount;
-            this.samplesCount++;
+            this.samplingStrategy.addSample(metricValue);
             this.consecutiveErrorsCount = 0;
         } catch (error) {
-            this.logService.warn(`Error on getting metric value. Error: ${error}`);
+            this.logService.error(`Error on getting metric value. Error: ${error}`);
             this.consecutiveErrorsCount++;
+        } finally {
+            this.scheduleNextStep(this.getPollingTimeout());
         }
-        this.scheduleNextStep(this.getPollingTimeout());
     }
 
     static getNextTimestamp (interval) {
@@ -46,21 +49,16 @@ class SamplingService {
         const secondsInInterval = interval * 60;
         return secondsInInterval * Math.ceil(unixTimestamp / secondsInInterval);
     }
-    scheduleNextStep (timeout) {
-        if (this.autoRescheduling) {
-            this.timerId = setTimeout(this.samplingStep.bind(this), timeout, true);
-        }
-    }
 
     startSampling () {
-        if (!this.autoRescheduling) {
-            this.autoRescheduling = true;
+        if (!this.isSamplingStarted) {
+            this.isSamplingStarted = true;
             this.scheduleNextStep(0);
         }
     }
 
     stopSampling () {
-        this.autoRescheduling = false;
+        this.isSamplingStarted = false;
         if (this.timerId != null) {
             clearTimeout(this.timerId);
             this.timerId = null;

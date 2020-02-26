@@ -1,7 +1,7 @@
 class MetricDataMapper {
-    static fromDomain (metric) {
-        const {items, status, id, customerId, address} = metric;
-        return {items, status, id, customerId, address};
+    static fromDomain (object) {
+        const {metric, value, timestamp} = object;
+        return {metric, value, timestamp};
     }
 }
 module.exports = MetricDataMapper;

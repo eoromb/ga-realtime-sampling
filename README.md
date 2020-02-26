@@ -1,1 +1,1 @@
-## Simple app for monitoring and sampling of GA real time data
+## Simple app for monitoring and sampling of Google Analytics real time data

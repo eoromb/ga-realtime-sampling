@@ -1,15 +1,24 @@
 {
   "name": "ga-realtime-sampling",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simple API for metric sampling",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r dotenv/config index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "googleapis": "^47.0.0"
+    "googleapis": "^47.0.0",
+    "knex": "^0.20.10",
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-node": "^11.0.0"
   }
 }

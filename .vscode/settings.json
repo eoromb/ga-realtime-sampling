@@ -1,0 +1,7 @@
+{
+        "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
+        "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+        "editor.detectIndentation": false,
+    "workbench.tree.indent": 4,
+    "javascript.format.insertSpaceAfterConstructor": true
+}

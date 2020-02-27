@@ -1,0 +1,12 @@
+version: '3.6'
+
+services:
+  ga_realtime_sampling:
+    build: .
+    container_name: ga_realtime_sampling_container
+    restart: always
+    ports:
+      - "3000:3000"
+    command: npm run startWithDb
+    
+

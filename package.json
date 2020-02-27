@@ -7,9 +7,10 @@
     "db:migrate": "knex migrate:latest",
     "db:rollback": "knex migrate:rollback",
     "start": "node -r dotenv/config server.js",
+    "startWithDb": "npm run db:rollback && npm run db:migrate && npm run start",
     "test": "jest --watch"
   },
-  "author": "",
+  "author": "Evgenii Romb",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",

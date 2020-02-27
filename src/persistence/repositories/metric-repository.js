@@ -12,10 +12,14 @@ class MetricRepository {
         return this.knexClient
             .select()
             .from('metric')
-            .where('metric', metric)
-            .andWhere(function () {
-                // eslint-disable-next-line no-invalid-this
-                this.where('timestamp', '>', +from).andWhere('timestamp', '<', +to);
+            .where(qb => {
+                qb.where('metric', metric);
+                if (from != null) {
+                    qb.andWhere('timestamp', '>', +from);
+                }
+                if (to != null) {
+                    qb.andWhere('timestamp', '<', +to);
+                }
             });
     }
 }

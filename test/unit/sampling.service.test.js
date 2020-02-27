@@ -53,7 +53,7 @@ describe('sampling service test', () => {
         const samplingService = new SamplingService(params);
         for (let i = 1; i < 5; i++) {
             await samplingService.samplingStep();
-            expect(MetricProvider.mock.instances[0].getMetric).toHaveBeenCalledTimes(i);
+            expect(MetricProvider.mock.instances[0].getMetricValue).toHaveBeenCalledTimes(i);
             expect(params.timestampStrategy.getBoundaryTimestamp).toHaveBeenCalledTimes(i);
             expect(SamplingStrategy.mock.instances[0].addSample).toHaveBeenCalledTimes(i);
         }

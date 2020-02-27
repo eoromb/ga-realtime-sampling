@@ -1,3 +1,6 @@
+/**
+ * Metric repository
+ */
 class MetricRepository {
     constructor (knexClient) {
         this.knexClient = knexClient;
@@ -5,7 +8,7 @@ class MetricRepository {
     async addMetricValue ({metric, value, timestamp}) {
         return this.knexClient('metric').insert({metric, value, timestamp});
     }
-    async getMetric ({metric, from, to}) {
+    async getMetricValues ({metric, from, to}) {
         return this.knexClient
             .select()
             .from('metric')

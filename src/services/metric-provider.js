@@ -1,4 +1,7 @@
 const {google} = require('googleapis');
+/**
+ * Provides metric's data
+ */
 class MetricProvider {
     constructor ({configService}) {
         const {clientEmail, privateKey} = configService.getMetricProviderConfig();
@@ -15,7 +18,12 @@ class MetricProvider {
     static hasCorrectFormat (result) {
         return result != null && result.data != null && result.data.totalsForAllResults != null;
     }
-    async getMetric (viewId, metric) {
+    /**
+     * Gets specified metric value
+     * @param {*} viewId GA View ID
+     * @param {*} metric GA real time metric id
+     */
+    async getMetricValue (viewId, metric) {
         return new Promise((resolve, reject) => {
             const metricFullName = `rt:${metric}`;
             const viewFullId = `ga:${viewId}`;

@@ -1,5 +1,8 @@
 const AppError = require('./app-error');
 
+/**
+ * Http level error
+ */
 class HttpError extends AppError {
     constructor (message, code) {
         super(code || 500);

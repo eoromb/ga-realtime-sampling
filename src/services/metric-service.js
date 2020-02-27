@@ -2,8 +2,8 @@ class MetricService {
     constructor ({metricRepository}) {
         this.metricRepository = metricRepository;
     }
-    async getMetric ({metric, from, to}) {
-        return this.metricRepository.getMetric({metric, from, to});
+    async getMetricValues ({metric, from, to}) {
+        return this.metricRepository.getMetricValues({metric, from, to});
     }
 }
 module.exports = MetricService;

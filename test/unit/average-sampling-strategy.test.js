@@ -3,7 +3,7 @@ describe('average sampling test', () => {
     let strategy;
     const minDelta = 0.0001;
     beforeEach(() => (strategy = new Strategy()));
-    it('should get correct average', () => {
+    it('should get correct average after begin/end cycle', () => {
         const data = [];
         strategy.beginSampling();
         for (let i = 0; i < 100; i++) {

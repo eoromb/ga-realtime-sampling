@@ -1,3 +1,6 @@
+/**
+ * Simple logging service
+ */
 class LogService {
     error (message) {
         // eslint-disable-next-line no-console

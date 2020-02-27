@@ -1,4 +1,10 @@
+/**
+ * Configuration services
+ */
 class ConfigService {
+    constructor () {
+        this.databaseConfig = require('../../knexfile')[process.env.NODE_ENV || 'development'];
+    }
     getMetricProviderConfig () {
         return {
             privateKey: process.env.PRIVATE_KEY,
@@ -8,21 +14,17 @@ class ConfigService {
     getSamplingServiceConfig () {
         return {
             metric: process.env.SAMPLING_METRIC,
-            viewId: process.env.SAMPLING_VIEW_ID,
-            pollingTimeout: +process.env.POLLING_TIMEOUT || 500
+            viewId: process.env.SAMPLING_VIEW_ID
         };
+    }
+    getPollingTimeout () {
+        return +process.env.POLLING_TIMEOUT || 500;
     }
     getSamplingInterval () {
         return +process.env.SAMPLING_INTERVAL || 5;
     }
     getDatabaseConfig () {
-        return {
-            client: 'sqlite3',
-            connection: {
-                filename: './db.sqlite'
-            },
-            useNullAsDefault: true
-        };
+        return this.databaseConfig;
     }
     getServerPort () {
         return +process.env.PORT || 3000;

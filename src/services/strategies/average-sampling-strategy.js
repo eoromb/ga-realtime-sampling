@@ -1,3 +1,6 @@
+/**
+ * Sampling strategy based on average value calculation
+ */
 class AverageSamplingStrategy {
     constructor () {
         this.beginSampling();
